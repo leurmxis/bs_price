@@ -1,6 +1,7 @@
 import akshare as ak
 import baostock as bs
 import pandas as pd
+import numpy as np
 from datetime import datetime
 import pytz
 import pyarrow
