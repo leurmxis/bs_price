@@ -26,7 +26,7 @@ if sum(tradeday['trade_date'] == today):
         time.sleep(random.uniform(0.1,0.15))
         rs = bs.query_history_k_data_plus(code,
         "date,code,open,high,low,close,preclose,volume,amount,adjustflag,turn,tradestatus,pctChg,peTTM,psTTM,pcfNcfTTM,pbMRQ,isST",
-        start_date=start_date, end_date=end_date,
+        start_date=today, end_date=today,
         frequency="d", adjustflag="3")
         data_list = []
         while (rs.error_code == '0') & rs.next():
