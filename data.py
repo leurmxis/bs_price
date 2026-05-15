@@ -10,20 +10,19 @@ import random
 
 tz = pytz.timezone('Asia/Shanghai')
 today = datetime.now(tz).strftime('%Y%m%d')
-today = '2026-05-15'
 
 tradeday = ak.tool_trade_date_hist_sina()
 tradeday['trade_date'] = pd.to_datetime(tradeday['trade_date'])
 
 if sum(tradeday['trade_date'] == today):
-    print('trade date')
+    print('trade date ',today)
     code_df = pd.read_parquet('./list.parquet')
     bs.login()
     result = []
 
     for row in code_df.itertuples(index=False):
         code = row[0]
-        print(code,' start')
+        
         time.sleep(random.uniform(0.1,0.15))
         rs = bs.query_history_k_data_plus(code,
         "date,code,open,high,low,close,preclose,volume,amount,adjustflag,turn,tradestatus,pctChg,peTTM,psTTM,pcfNcfTTM,pbMRQ,isST",
@@ -35,8 +34,7 @@ if sum(tradeday['trade_date'] == today):
         r = pd.DataFrame(data_list, columns=rs.fields)
         result.append(r)
     bs.logout()
-
-    print('开始修形')
+    print('cleaning')
     df = pd.concat(result,ignore_index=True)
     df['股票代码'] = df['code'].str.split('.').str[1]
     cols_float = ['open','high','low','close','preclose','volume','amount','turn','pctChg','peTTM','psTTM','pcfNcfTTM','pbMRQ','adjustflag','tradestatus','isST']
@@ -53,4 +51,4 @@ if sum(tradeday['trade_date'] == today):
     cols = ['日期','股票代码','简称','开盘价','最高价','最低价','收盘价','前日收盘价除权','成交量/手','成交额/亿','涨跌幅','换手率','流通市值/亿','复权状态(1后复权2前复权3不复权)','交易状态','peTTM','市销率TTM','市现率TTM','市净率','isST']
     df = mg_df[cols]
     df.to_parquet(f'./data/{today}.parquet',engine='pyarrow',index=False)
-    print('写入完成')
+    
