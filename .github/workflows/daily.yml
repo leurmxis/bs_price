@@ -2,7 +2,7 @@ name: Mission
 
 on:
   schedule:
-    - cron: '05 12 * * *'
+    - cron: '23 11 * * *'
   workflow_dispatch: 
 
 jobs:
