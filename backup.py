@@ -11,13 +11,14 @@ import random
 code_df = pd.read_parquet('./list.parquet')
 bs.login()
 result = []
-    
+# os.makedirs('./data',exist_ok=True)   
 
-start_date = '2026-06-22'
+start_date = '2026-05-16'
 end_date = '2026-06-22'
     
 for row in code_df.itertuples(index=False):
     code = row[0]
+    # print(code)
     time.sleep(random.uniform(0.1,0.15))
     rs = bs.query_history_k_data_plus(code,
     "date,code,open,high,low,close,preclose,volume,amount,adjustflag,turn,tradestatus,pctChg,peTTM,psTTM,pcfNcfTTM,pbMRQ,isST",
@@ -33,6 +34,8 @@ bs.logout()
     
 print('cleaning')
 df = pd.concat(result,ignore_index=True)
+# df.to_parquet('./data/raw.parquet',engine='pyarrow',index=False)
+
 df['股票代码'] = df['code'].str.split('.').str[1]
 cols_float = ['open','high','low','close','preclose','volume','amount','turn','pctChg','peTTM','psTTM','pcfNcfTTM','pbMRQ','adjustflag','tradestatus','isST']
 df[cols_float] = df[cols_float].replace('',np.nan)
