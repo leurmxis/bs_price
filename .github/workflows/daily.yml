@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '23 11 * * *'
   workflow_dispatch: 
+    inputs:
+      run_backup:
+        description: 'run backup.py?'
+        required: false
+        default: false    
+        type: boolean
 
 jobs:
   build:
@@ -24,14 +30,19 @@ jobs:
       run: |
         pip install akshare pandas pyarrow pytz baostock numpy
 
-    - name: run
-      run: python data.py
+    - name: run main
+      if: ${{ github.event.inputs.run_backup != true }}
+      run: python data.py   
+    
+    - name: run backup
+      if: ${{ github.event.inputs.run_backup == true }}
+      run: python backup.py
 
-    - name: 提交并推送数据文件
+    - name: push data
       run: |
         git config --local user.email "actions@github.com"
         git config --local user.name "GitHub Action"
         git add .
         git commit -m "Auto update stock data: $(date +'%Y-%m-%d')" || exit 0
-        git pull origin main --rebase -X theirs
-        git push
+        git pull origin main --rebase -X theirs  
+        git push origin main
