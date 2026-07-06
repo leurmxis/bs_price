@@ -31,11 +31,13 @@ jobs:
         pip install akshare pandas pyarrow pytz baostock numpy
 
     - name: run main
-      if: ${{ github.event.inputs.run_backup != true }}
+      # 定时触发，或者手动触发且未勾选 backup 时，运行 data.py
+      if: ${{ github.event_name == 'schedule' || github.event.inputs.run_backup == 'false' }}
       run: python data.py   
     
     - name: run backup
-      if: ${{ github.event.inputs.run_backup == true }}
+      # 只有手动触发且明确勾选 backup 时，才运行 backup.py
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_backup == 'true' }}
       run: python backup.py
 
     - name: push data
