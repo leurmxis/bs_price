@@ -13,8 +13,8 @@ bs.login()
 result = []
 # os.makedirs('./data',exist_ok=True)   
 
-start_date = '2026-07-06'
-end_date = '2026-07-06'
+start_date = '2026-07-07'
+end_date = '2026-07-07'
     
 for row in code_df.itertuples(index=False):
     code = row[0]
